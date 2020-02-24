@@ -9,9 +9,19 @@
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #include <unistd.h> 
+#include <sys/stat.h>
 #define PORT 5000 
 #define MAXLINE 1024 
 #define IP_ADDRESS "127.0.0.1"
+
+int isFileinDirectory(const char *path){
+
+	FILE *f = fopen(path, "r");
+	if(f==NULL) return 0; 
+	fclose(f);
+	return 1;
+}
+
 
 int main(int argc, char** args) 
 { 
@@ -61,6 +71,7 @@ int main(int argc, char** args)
 			n = recvfrom(udpfd, buffer, sizeof(buffer), 0, 
 						(struct sockaddr*)&cliaddr, &len); 
 			puts(buffer);
+			stat('/', '
 			printf("%d number\n", n);
 			char str[MAXLINE];
 			strncpy(str, buffer,10);
