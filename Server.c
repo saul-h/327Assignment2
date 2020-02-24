@@ -9,9 +9,22 @@
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #include <unistd.h> 
+#include <sys/stat.h>
 #define PORT 5000 
 #define MAXLINE 1024 
 #define IP_ADDRESS "127.0.0.1"
+
+int isFileInDirectory(char *path){
+	
+
+	printf("isnide -----%s-----\n",  path);
+	FILE *f = fopen(path, "rb");
+	if(f==NULL) return 0; //file does not exist 
+	printf("closin..\n");
+	fclose(f);
+	return 1; 
+}
+
 
 int main(int argc, char** args) 
 { 
@@ -61,15 +74,16 @@ int main(int argc, char** args)
 			n = recvfrom(udpfd, buffer, sizeof(buffer), 0, 
 						(struct sockaddr*)&cliaddr, &len); 
 			puts(buffer);
-			printf("%d number\n", n);
-			char str[MAXLINE];
-			strncpy(str, buffer,10);
-			if(strcmp(buffer, "dir\n")==0){
-			printf("display dir\n");
+			//printf("%d number\n", n);
+			char filename[100];
+			strncpy(filename, buffer,100);
+			filename[strcspn(filename, "\r\n")] =0; // get rid of new line
+			if(isFileInDirectory(filename)==0){ //if file doesnt exist in dir, we process the info
+			printf("file not in dir \n");
 				} 
-			else {
+			else {// else we simply wait for another message
 				
-								
+				printf("File already exists on server, try another file\n");				
 			}
 			
 			//sendto(udpfd, (const char*)message, sizeof(buffer), 0, 
